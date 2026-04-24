@@ -14,9 +14,12 @@ Tendo em mente que o projeto é destinado a monitoramento de plantações de caf
 
 #### Estrutura:
 Microcontrolador como o ATmega328P, apénas para captar os dados dos sensores colocalos em um modelo de registro de dados como JSON, também se faz nescessario a utilização de um sistema de comuniação a longa distancia, como LoRa e ou ondas de radio, oque for melhor para lavouras.
+
 Os sensores não devem ser muito caros erros ou a nescessidade de trabalho nos dados de entrada podem ser aliviados atravez de modelos usando um computador central mais robusto.
 A comunicação deve ser feita entre o controlador principal (master) que ficara em facil acesso e os controladores secundarios (slaves) que ficarão na lavoura, se nescessario os controladores secundarios poderão servir de ligação para com o mestre, funcionando assim como uma rede, com o proposito de permitir maior distancia para comunicação.
+
 A autonomia do controlador é essencial, devera ter a capacidade de passar longos periodos de tempo sem ser carregado e ou ter a capacidade de se recarregar, desta forma torna-se essencial gravitar por uma operação eficiente, podendo variar entre periodos de comunicação e ou tempo entre Medição.
+
 Visibilidade, idealmente o sistema deve ter visibilidade completa, desde a quantidade de bateria quanto a vida util das peças, além de conformidade quanto a tempo de medição e log dos registros.
 
 ### Prove of Concept (POC)
