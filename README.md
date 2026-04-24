@@ -53,9 +53,9 @@ O equipamento implantado na lavoura tem o único objetivo de acordar, realizar a
 
 
 #### Papers Pesquisados
-	[Detection of air temperature, humidity and soil pH by using DHT22 and pH sensor based Arduino nano microcontroller](https://pubs.aip.org/aip/acp/article/2221/1/100008/687623/Detection-of-air-temperature-humidity-and-soil-pH)
+[Detection of air temperature, humidity and soil pH by using DHT22 and pH sensor based Arduino nano microcontroller](https://pubs.aip.org/aip/acp/article/2221/1/100008/687623/Detection-of-air-temperature-humidity-and-soil-pH)
 	
-	[Evaluating the Effectiveness of a Solar-Powered Arduino Real-Time Transmitter in Measuring Moisture, Temperature, and Environmental pH Levels in Soil](https://animorepository.dlsu.edu.ph/conf_shsrescon/2025/paper_csr/7/)
+[Evaluating the Effectiveness of a Solar-Powered Arduino Real-Time Transmitter in Measuring Moisture, Temperature, and Environmental pH Levels in Soil](https://animorepository.dlsu.edu.ph/conf_shsrescon/2025/paper_csr/7/)
 	
 #### Peças Pesquisadas
 	Sensor de solo RS485 Modbus 7 em 1 mede umidade do solo, temperatura, umidade, EC PH NPK
