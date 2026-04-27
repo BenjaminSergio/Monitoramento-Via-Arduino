@@ -44,7 +44,7 @@ Deverão ser feito testes para o sistema de comunicação, sistema de medição,
 - sistema energetico: deverão ser feitos testes de consumo, capacidade e durabilidade;
 - durabilidade: para garantir as medições realizadas e calculo de custos devera ser realizada amplos teste quanto a durabilidade e tempo de vida do aparelho, com objetivo de registrar quanto tempo de vida confiavel possui e ciclos de intervenção/monitoramento tecnico.
 
-##### Pontos Crítico
+#### Pontos Crítico
 Deve levar em consideração os seguintes pontos críticos do projeto capazes de inviabilizar a implanação
 - Sensores: Os sensores devem ser testados o maximo possivel, tanto para precisão quanto para vida util, sensores como o BME280 são confiaveis e amplamente utilizados mas sensores de solo partucularmente para a medição de NPK podem ser problematicos, tendo em vista que eles fazem a medição de forma indireta, desta forma pode se fazer nescessario a transformação dos dados captados por meio de um algoritico. 
 - Comunicação: Mesmo LoRa sendo capaz de comunicação em longas distancias apresenta decaimento severo da capacidade de comunicação quando em meios com muita barreita natural, tal qual a foliagem das plantas na lavoura, desta forma deve-se testar a utilização de postes, para colocar a antena numa posição mais vantajosa, e a utilização de um sistema de comunicação distribuido entre as sondas.
