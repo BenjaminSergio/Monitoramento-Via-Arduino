@@ -13,9 +13,12 @@ Tendo em mente que o projeto é destinado a monitoramento de plantações de caf
 
 
 #### Estrutura:
-Microcontrolador como o ATmega328P, apénas para captar os dados dos sensores colocalos em um modelo de registro de dados como JSON, também se faz nescessario a utilização de um sistema de comuniação a longa distancia, como LoRa e ou ondas de radio, oque for melhor para lavouras.
+Microcontrolador como o ATmega328P e ou ESP32, apénas para captar os dados dos sensores colocalos e envialos como uma struct para um microcontrolador mestre, também se faz nescessario a utilização de um sistema de comuniação a longa distancia, como LoRa e ou ondas de radio, oque for melhor para lavouras.
+
+A comunicação deve ser feita como uma rede de aparelhos conectados, de preferencia com a antena em um poste mais alta que a planta de café, para melhor propagação do sinal pela lavoura.
 
 Os sensores não devem ser muito caros erros ou a nescessidade de trabalho nos dados de entrada podem ser aliviados atravez de modelos usando um computador central mais robusto.
+
 A comunicação deve ser feita entre o controlador principal (master) que ficara em facil acesso e os controladores secundarios (slaves) que ficarão na lavoura, se nescessario os controladores secundarios poderão servir de ligação para com o mestre, funcionando assim como uma rede, com o proposito de permitir maior distancia para comunicação.
 
 A autonomia do controlador é essencial, devera ter a capacidade de passar longos periodos de tempo sem ser carregado e ou ter a capacidade de se recarregar, desta forma torna-se essencial gravitar por uma operação eficiente, podendo variar entre periodos de comunicação e ou tempo entre Medição.
@@ -23,15 +26,38 @@ A autonomia do controlador é essencial, devera ter a capacidade de passar longo
 Visibilidade, idealmente o sistema deve ter visibilidade completa, desde a quantidade de bateria quanto a vida util das peças, além de conformidade quanto a tempo de medição e log dos registros.
 
 ### Prove of Concept (POC)
-No caso da prova de conceito pode-se utilizar peças mais caras para produção industrial e ou com maior consumo de energia, tendo em vista que serve para testar a funcionalidade do todo quanto a confiabilidade das medições
+No caso da prova de conceito não se faz tão nescessario a preocupação com o gasto energetico, idealmente deve se fazer um conjunto de um controlador e três sondas, sendo que o controlador deve ser um controlador tal qual ESP32, pelas funcionalidades com wifi e bluetooth, e as sondas devem ser uma com um ESP32, e as demais com ATmega328p. O minimo para teste e validação é pelo menos um controlador como ESP32 como mestre e um outro controlador, podendo ser mais fraco como servo, este minimo serve para testar comunicação e mensuramento da terra.
+
+ESP32 gasta mais energia, não sendo nescessariamente o ideal para a ser levado ao campo, pórem tem serventia estrategica como um controlador central em um ponto estrategico, tanto para processamento dos dados de chegada quanto para envio para um outro dispositivo como um computador ou por wifi. 
+
+Para teste de comunicação é nesessario no minimo um par mestre/servo, idealmente deve se ter um ou dois servos a mais para testar conexão por rede e roteamento/trafego de informação.
+
+Os sensores são um ponto crítico do modelo, para maior entendimento da situação da lavoura durante é planejado a utilização de um sensor como o BME280 capaz de medir temperatuda, umidade e pressão atimosferica, e um sensor como o JXCT RS458 para medição de solo como o Sensor 7 em 1, que mede a umidade, temperatura, ph, condutividade eletrica e NPK.
+
+[JXCT RS485 ModbusJXBS-3001-NPK-RS Manual do usuário do sensor de solo NPK](https://manuals.plus/pt/jxct/rs485-modbusjxbs-3001-npk-rs-soil-npk-sensor-manual)
 
 ### Testes
 Deverão ser feito testes para o sistema de comunicação, sistema de medição, sistema de hibernação, sistema energetico e durabilidade:
-- sistema de comunicação: deverão ser feitos testes de cominicação, perda de pacotes e perda de informação;
-- sistema de medição: deverão ser realizados teste de precisão dos sensores e testes de durabilidade dos sensores, e de suas partes fisicas;
+- sistema de comunicação: deverão ser feitos testes de cominicação, perda de pacotes e perda de informação, com e sem postes par aumentar o raio efetivo do sinal;
+- sistema de medição: deverão ser realizados teste de precisão dos sensores, testes de durabilidade dos sensores, e de suas partes fisicas, muitos destes sensores não mesuram a quantidade e NPK diretamente, se faz nescessario validar o dado coletado e tentar metodos de tratamento dos dados;
 - sistema de hibernação: deverão ser realizados teste para o sistema de hibernação do microcontrolador e suas adições em prol de impedir consumo exacerbado de energia;
 - sistema energetico: deverão ser feitos testes de consumo, capacidade e durabilidade;
 - durabilidade: para garantir as medições realizadas e calculo de custos devera ser realizada amplos teste quanto a durabilidade e tempo de vida do aparelho, com objetivo de registrar quanto tempo de vida confiavel possui e ciclos de intervenção/monitoramento tecnico.
+
+##### Pontos Crítico
+Deve levar em consideração os seguintes pontos críticos do projeto capazes de inviabilizar a implanação
+- Sensores: Os sensores devem ser testados o maximo possivel, tanto para precisão quanto para vida util, sensores como o BME280 são confiaveis e amplamente utilizados mas sensores de solo partucularmente para a medição de NPK podem ser problematicos, tendo em vista que eles fazem a medição de forma indireta, desta forma pode se fazer nescessario a transformação dos dados captados por meio de um algoritico. 
+- Comunicação: Mesmo LoRa sendo capaz de comunicação em longas distancias apresenta decaimento severo da capacidade de comunicação quando em meios com muita barreita natural, tal qual a foliagem das plantas na lavoura, desta forma deve-se testar a utilização de postes, para colocar a antena numa posição mais vantajosa, e a utilização de um sistema de comunicação distribuido entre as sondas.
+- Gasto Energetico: Como o objetivo é a criação de uma sonda capaz de viver por longos periodos de tempos na lavoura se faz nescessario a avaliação do gasto energetico, tanto para a utilização de baterias quanto no caso de utilização de placas solares, por isso a utilização de um ATmega328P e um MOSFET para os sensores na lavoura, a ideia é buscar um sono profundo e impedir maiores gastos energeticos.
+- Custo: o maior custo do projeto esta na componente do sensor e trasmissor, 
+	- os controladores ATmega328P e ESP32 são encontrados nas faixas de 40 a 70 reais, alguns modelos chegando na faixa dos 100 reais, 
+	- um sensor bme280 é encontrado até 45 reais, 
+	- um transmissor EBYTE E220-900T22D custa cerca de 100 reais, 
+	- um mosfet custa cerca de 2 reais a unidade, 
+	- o sistema energito fica a depender da escolha, entre um sistema recarregavel, utilizando painel solar e um sistema a pilha com preços variados com preços variados na casa dos 100 reais, 
+	- o sensor RS485 tem peços que podem chegar até 500 reais, sendo o componente mais caro.
+	- e a impermeabilização do projeto final, para garantir tempo de vida, deve ter seu preço pesquisado  após a confecção de um prototipo. 
+- Os preços dos componentes podem variar de acordo com a quantidade encomendada as manofaturas.
 
 
 ### Modelo Planejado
@@ -56,6 +82,10 @@ O equipamento implantado na lavoura tem o único objetivo de acordar, realizar a
 [Detection of air temperature, humidity and soil pH by using DHT22 and pH sensor based Arduino nano microcontroller](https://pubs.aip.org/aip/acp/article/2221/1/100008/687623/Detection-of-air-temperature-humidity-and-soil-pH)
 	
 [Evaluating the Effectiveness of a Solar-Powered Arduino Real-Time Transmitter in Measuring Moisture, Temperature, and Environmental pH Levels in Soil](https://animorepository.dlsu.edu.ph/conf_shsrescon/2025/paper_csr/7/)
+
+[Design and Build a Soil Nutrient Measurement Tool for Citrus Plants Using NPK Soil Sensors Based on the Internet of Things](https://www.researchgate.net/publication/357796648_Design_and_Build_a_Soil_Nutrient_Measurement_Tool_for_Citrus_Plants_Using_NPK_Soil_Sensors_Based_on_the_Internet_of_Things)
+
+[Experimental Study on the Porpagation Characteristics of LoRa Signals in Maize Fields](https://www.mdpi.com/2079-9292/14/11/2156)
 	
 #### Peças Pesquisadas
 	Sensor de solo RS485 Modbus 7 em 1 mede umidade do solo, temperatura, umidade, EC PH NPK
