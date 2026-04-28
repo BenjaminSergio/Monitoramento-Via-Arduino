@@ -70,3 +70,27 @@ Busca-se fazer os seguintes testes:
 - Arquitetura: Validação da arquitetura física e locação dos componentes.
 
 Alguns testes não se fazem obrigatórios, podendo levar em consideração as especificações da fabricante
+
+
+## Materiais que preciso comprar
+
+Módulo MOSFET IRF520 x 3
+(Modulo do mosfet ja com placa adaptadora) 5 ~ 10 R$
+
+Sx1278 módulo lora 433m 10km Ra-02 módulo sem fio ai-thinker spread espectro transmissão eletrônica kit diy x 3
+(Kit do transmissor LoRa com uma antena de 433MHz) 10 ~ 20 R$
+
+INA219 x3
+(Módulo sensor de corrente) 15 ~ 25 R$
+
+ESP32 x1
+(Arduino com Bluetooth e WiFi) 10 ~ 50 R$
+
+ATmega328 x1
+(Arduino simples de baixo consumo, o Pro mini 3.3v precisa de um adaptador serial) 5 ~ 40 R$
+
+FTDI
+(Adaptador para o Pro mini) 3 ~ 10 R$
+
+AMS1117-3.3V x3 ?????
+(Regulador de voltagem) 3 ~ 10 R$
