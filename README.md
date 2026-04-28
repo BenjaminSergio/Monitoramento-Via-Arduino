@@ -72,8 +72,11 @@ O equipamento implantado na lavoura tem o único objetivo de acordar, realizar a
 	
 2. Arquitetura do Nó Mestre / Gateway (Sede)
 O equipamento Mestre fica abrigado na sede da fazenda com acesso a fontes de energia mais robustas e conectividade com a internet.
+
 - Microcontrolador: Baseado no ESP32, escolhido por seu processador robusto de 32 bits, conectividade Wi-Fi/Bluetooth integrada e maior capacidade de memória RAM para gerenciar dezenas de nós no campo.
+
 - Processamento e Inteligência (NPK por IA): Ao receber o pacote de dados brutos (CE, umidade e temperatura) dos nós escravos via LoRa, o ESP32 atua como porta de entrada para algoritmos de Inteligência Artificial (como Florestas Aleatórias/Random Forest). Modelos preditivos correlacionam a medição física precisa do sensor de solo com análises laboratoriais (ground truth), permitindo predizer as concentrações reais de NPK com exatidão que pode chegar a 92%, solucionando a limitação do hardware de baixo custo.
+
 - Interface: Após o processamento, o ESP32 empacota os resultados finais em formato JSON e os encaminha para plataformas em nuvem via Wi-Fi para visualização remota e emissão de alertas.
 
 3. Invólucro e Impermeabilização (Nível IP68)A sobrevivência em campo aberto, exposto a agrotóxicos, variações térmicas violentas e submersão em poças exige impermeabilização absoluta de nível IP68.
@@ -88,15 +91,47 @@ O equipamento Mestre fica abrigado na sede da fazenda com acesso a fontes de ene
 
 [Experimental Study on the Porpagation Characteristics of LoRa Signals in Maize Fields](https://www.mdpi.com/2079-9292/14/11/2156)
 	
-## TODO
-	[] Protoripo:
-		[] Protoripo controlador
-		[] Prototipo comunicador
-		[] Prototipo sonda
-		[] Prototipo deep sleep
-	[] Avaliação do custo energetico
-	[] Avaliação da precisão dos sensores
-	[] Avaliação das distâncias entre sondas
-	[] Avaliação da altura dos postes
-	[] Avaliação da resistencia e durabilidade
- 
+
+
+<h2>TODO</h2>
+
+<details open>
+<summary><input type="checkbox"> Prototipo</summary>
+<details open>
+<summary><input type="checkbox"> Prototipo v.01</summary>
+<details open>
+<summary><input type="checkbox"> Componentes</summary>
+<label><input type="checkbox" checked> Orçamento</label><br>
+<label><input type="checkbox"> Compra</label><br>
+<label><a href="Prototipo/README.md">Documentação</a></label>
+</details>
+<label><input type="checkbox"> Montagem</label><br>
+<label><input type="checkbox"> Teste</label>
+</details>
+<label><input type="checkbox"> Prototipo controlador</label><br>
+<label><input type="checkbox"> Prototipo comunicador</label><br>
+<label><input type="checkbox"> Prototipo sonda</label><br>
+<label><input type="checkbox"> Prototipo deep sleep</label>
+</details>
+<label><input type="checkbox"> Avaliação do custo energetico</label><br>
+<label><input type="checkbox"> Avaliação da precisão dos sensores</label><br>
+<label><input type="checkbox"> Avaliação das distâncias entre sondas</label><br>
+<label><input type="checkbox"> Avaliação da altura dos postes</label><br>
+<label><input type="checkbox"> Avaliação da resistencia e durabilidade</label>
+
+
+
+<style>
+  summary {
+    cursor: pointer;
+    font-weight: normal;
+  }
+
+  details {
+    margin-left: 1em;
+  }
+
+  label {
+    cursor: pointer;
+  }
+</style>

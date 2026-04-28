@@ -94,3 +94,5 @@ FTDI
 
 AMS1117-3.3V x3 ?????
 (Regulador de voltagem) 3 ~ 10 R$
+
+##### Custo do Prototipo com preças de casa 117 ~ 295 R$ Sem Frete
