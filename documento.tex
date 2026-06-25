@@ -1,0 +1,210 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{microtype}
+
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=3cm,
+    right=2.5cm
+}
+
+\onehalfspacing
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\begin{document}
+
+% ─── Cabeçalho ───────────────────────────────────────────────────────────────
+\begin{center}
+    {\LARGE\bfseries Monitoramento de Solo via Arduino}\\[0.4em]
+    {\large Sistema Distribuído de Sensoriamento para Lavouras de Café}\\[0.8em]
+    {\normalsize Benjamin Sergio \quad\textbar\quad \today}
+\end{center}
+
+\vspace{0.5em}
+\hrule
+\vspace{1em}
+
+% ─── Resumo ──────────────────────────────────────────────────────────────────
+\begin{abstract}
+\noindent
+Este documento apresenta o projeto \textit{Monitoramento-Via-Arduino}, um sistema IoT
+distribuído para monitoramento de parâmetros de solo em lavouras de café. O sistema
+é composto por uma rede de nós sensores de baixo custo e baixo consumo energético
+que coletam dados de umidade, temperatura, pH e nutrientes NPK, transmitindo-os
+via LoRa a um nó mestre central. O nó mestre agrega os dados, aplica modelos de
+inteligência artificial para predição indireta de NPK e os encaminha para plataformas
+em nuvem. O protótipo inicial tem orçamento estimado em R\$~250,00.
+\end{abstract}
+
+\vspace{0.5em}
+
+% ─── 1. Introdução ───────────────────────────────────────────────────────────
+\section{Introdução e Motivação}
+
+O monitoramento preciso das condições do solo é essencial para a gestão eficiente de
+lavouras, especialmente em culturas de alto valor como o café. Parâmetros como
+umidade, temperatura, pH, condutividade elétrica e concentração de nutrientes
+(Nitrogênio, Fósforo e Potássio --- NPK) influenciam diretamente a produtividade e
+a qualidade do produto final.
+
+Sistemas comerciais capazes de medir esses parâmetros em campo geralmente apresentam
+dois obstáculos: custo elevado e baixa escalabilidade em propriedades extensas.
+Soluções baseadas em microcontroladores Arduino e tecnologias de comunicação de longo
+alcance (LoRa) surgem como alternativa viável para contornar esses problemas,
+possibilitando a implantação de redes distribuídas de sensores a custo acessível.
+
+Este projeto propõe um sistema mestre-escravo no qual múltiplos nós escravos,
+distribuídos pela lavoura, coletam dados localmente e os transmitem a um nó mestre
+centralizado. O mestre consolida as informações, executa algoritmos de predição
+baseados em aprendizado de máquina e as disponibiliza para análise remota via
+plataformas em nuvem.
+
+% ─── 2. Arquitetura do Sistema ───────────────────────────────────────────────
+\section{Arquitetura do Sistema}
+
+\subsection{Topologia Mestre-Escravo}
+
+O sistema é organizado em dois tipos de nós com responsabilidades distintas:
+
+\textbf{Nó Mestre (ESP32):} Localizado na sede da propriedade, o nó mestre conta
+com conectividade Wi-Fi e Bluetooth, processamento central e alimentação robusta.
+É responsável por receber os dados dos nós escravos via LoRa, aplicar modelos de
+predição de NPK com Random Forest (acurácia $\approx 92\%$) e empacotar os
+resultados em JSON para envio à nuvem.
+
+\textbf{Nós Escravos (ATmega328P Pro Mini 3,3~V):} Distribuídos pelo campo,
+utilizam o microcontrolador ATmega328P em modo de hibernação profunda para reduzir
+o consumo a $0{,}1$--$3\,\mu\text{A}$. Um MOSFET AO3401 realiza o corte físico de
+alimentação dos periféricos durante o sono, eliminando os $40$--$80\,\text{mA}$
+de corrente parasita que estariam presentes caso o circuito permanecesse energizado.
+
+\subsection{Conjunto de Sensores}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Sensor} & \textbf{Grandezas medidas} & \textbf{Interface} \\
+\midrule
+JXCT RS485 ModbusJXBS-3001-NPK & Umidade, Temp., CE, NPK & RS485 Modbus \\
+BME280 & Temp. ambiente, Umid., Pressão & I2C \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+O sensor RS485 de nível industrial utiliza medição capacitiva indireta para estimar
+NPK. Como sensores de NPK diretos de alta precisão têm custo proibitivo, o projeto
+adota um modelo de aprendizado de máquina no nó mestre para converter as leituras
+brutas de capacitância em valores de NPK com precisão adequada para fins agrícolas.
+O BME280 substitui o DHT11/DHT22 por oferecer maior precisão e modo de sono nativo
+com consumo inferior.
+
+\subsection{Comunicação LoRa}
+
+O módulo EBYTE E220-900T22D opera na faixa de 433~MHz com potência de até 22~dBm.
+A frequência de 433~MHz foi escolhida pela maior penetração em vegetação densa,
+característica importante em lavouras de café com dossel fechado. A antena deve ser
+posicionada a mais de 2~m acima do dossel para otimizar a propagação do sinal.
+
+A transmissão utiliza estruturas binárias (\texttt{struct}) compactadas, completando
+cada ciclo em menos de 5 segundos. O protocolo suporta retransmissão em malha
+(\textit{mesh}), permitindo que nós intermediários retransmitam dados de nós mais
+distantes até o mestre.
+
+% ─── 3. Prototipagem e Validação ─────────────────────────────────────────────
+\section{Prototipagem e Plano de Validação}
+
+\subsection{Protótipo v.01}
+
+O primeiro protótipo tem como objetivo validar a arquitetura de comunicação, medir
+o consumo real de energia nos diferentes estados operacionais e verificar a eficácia
+do chaveamento por MOSFET. O orçamento estimado é de R\$~250,00, conforme a lista
+de componentes abaixo:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Componente} & \textbf{Qtd.} & \textbf{Custo (BRL)} \\
+\midrule
+ESP32 DevKit         & 2 & $\approx 50$ \\
+Pro Mini 3,3V        & 2 & $\approx 30$ \\
+Adaptador FTDI       & 1 & $\approx 15$ \\
+BME280               & 3 & $\approx 35$ \\
+Ra-02 433~MHz        & 3 & $\approx 40$ \\
+MOSFET AO3401 (kit) & 10 & $\approx 20$ \\
+INA219 (medidor)     & 1 & $\approx 20$ \\
+Protoboard + jumpers & -- & $\approx 40$ \\
+\midrule
+\textbf{Total}       &   & $\approx 250$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Plano de Testes}
+
+Os testes são divididos em quatro eixos:
+
+\textbf{1. Sistema de Comunicação:} Validação da comunicação bidirecional
+mestre-escravo e da retransmissão escravo-escravo; análise de perda de pacotes com
+e sem elevação da antena; verificação de integridade e autenticação de mensagens.
+
+\textbf{2. Sistema de Energia:} Medição do consumo em cada estado operacional
+(espera, ativo, medição, transmissão e hibernação profunda) com o INA219;
+avaliação da eficácia do corte por MOSFET em comparação ao simples
+modo \textit{sleep} de software.
+
+\textbf{3. Sistema de Medição:} Tempo de aquecimento dos sensores; acurácia e
+repetibilidade das leituras; durabilidade em condições de campo (IP68,
+exposição a agroquímicos e variações de temperatura).
+
+\textbf{4. Arquitetura Física:} Viabilidade de implantação em campo; otimização do
+posicionamento de componentes; resistência ambiental do encapsulamento.
+
+\subsection{Riscos e Mitigações}
+
+Os principais riscos identificados são: (i) atenuação do sinal LoRa por vegetação
+densa --- mitigado pela elevação da antena e pelo roteamento em malha; (ii) limitação
+da durabilidade dos sensores de solo em campo --- mitigado por encapsulamento IP68 e
+protocolos de manutenção preventiva; (iii) imprecisão da predição indireta de NPK
+--- mitigado pelo uso de modelos Random Forest treinados com amostras locais e
+revalidação periódica.
+
+% ─── Conclusão ───────────────────────────────────────────────────────────────
+\section{Considerações Finais}
+
+O projeto \textit{Monitoramento-Via-Arduino} demonstra que é possível construir uma
+rede distribuída de monitoramento de solo de baixo custo e longa autonomia,
+adequada à realidade das propriedades cafeeiras brasileiras. A combinação de
+microcontroladores de ultra-baixo consumo, comunicação LoRa de longo alcance e
+modelos de inteligência artificial para predição de NPK oferece uma solução
+escalável e tecnicamente robusta.
+
+O protótipo v.01, com orçamento de R\$~250,00, permitirá validar as hipóteses
+centrais do projeto antes do desenvolvimento da versão de campo. Os resultados
+obtidos na fase de prototipagem guiarão as decisões de componentes, firmware e
+encapsulamento para o produto final.
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+{\small \textit{Repositório:} \url{https://github.com/benjaminsergio/monitoramento-via-arduino}}
+
+\end{document}
